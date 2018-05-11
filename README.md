@@ -1,4 +1,4 @@
 # SMC-NS
 Unbiased and Consistent Nested Sampling via Sequential Monte Carlo
 
-Paper to be arxived soon!
+More details about SMC-NS can be found [here](https://arxiv.org/abs/1805.03924)!
