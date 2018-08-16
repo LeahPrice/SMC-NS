@@ -63,25 +63,25 @@ fprintf('\n\nSMC-NS Adaptive: %.3f, std: %.2e, avg. evals: %.0f \n', mean(ell), 
 
 
 %SMC-NS: fixed run
-    fprintf('\n\nSMC-NS Fixed Runs: \n')
-    options.levels = levels;
-  
-    
-    ell2 = zeros(runs,1);
-    evals =0;
-    for i = 1:runs
-        fprintf('%.0f ', i)
-        if exact
-            options.distances = distances;
-            [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_exact_fixed(options);
-        else
-            [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_MCMC_fixed(options);
-        end
-        ell2(i) =exp(log_evidence)*vol;
-        evals = evals + count_loglike;
-    end
+fprintf('\n\nSMC-NS Fixed Runs: \n')
+options.levels = levels;
 
-    fprintf('\n\nNS-SMC Fixed: %.3f, std: %.2e, avg. evals: %.0f \n', mean(ell2), std(ell2)/sqrt(runs),  evals/runs)
+
+ell2 = zeros(runs,1);
+evals =0;
+for i = 1:runs
+    fprintf('%.0f ', i)
+    if exact
+        options.distances = distances;
+        [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_exact_fixed(options);
+    else
+        [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_MCMC_fixed(options);
+    end
+    ell2(i) =exp(log_evidence)*vol;
+    evals = evals + count_loglike;
+end
+
+fprintf('\n\nNS-SMC Fixed: %.3f, std: %.2e, avg. evals: %.0f \n', mean(ell2), std(ell2)/sqrt(runs),  evals/runs)
 
 
 % TA-SMC: adaptive run with MCMC sampler
@@ -100,7 +100,7 @@ fprintf('\nTA-SMC: %.3f, std: %.2e, avg. evals: %.0f\n', mean(ell_Anneal), std(e
 
 
 % boxplot
-    
+
 
 % clf
 % boxplot([ell, ell2, ell3], 'Labels', {'Adaptive SMC-NS', 'SMC-NS',  'NS'})

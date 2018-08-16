@@ -68,29 +68,29 @@ while gammavar(t)~=1
     for i=1:N
         for k=1:R
             
-           % theta_prop = mvnrnd(theta(i,:,tplus1), sig^2 * eye(d));
-           if rand < 0.5
-               sig = options.sig;
-           else
-               sig = options.sig/4;
-           end
-           
-           
-           theta_prop = theta(i,:,tplus1);
-           
-           ind = ceil(rand * d);
-           theta_prop(ind) = theta_prop(ind) + sig * randn;
-           loglike_prop = loglike_fn(theta_prop,options);
-           count_loglike = count_loglike + 1;
-           if norm(theta_prop,2) <=1
-               log_mh = gammavar(t+1)*(loglike_prop - loglike(i,tplus1));
-               
-               if exp(log_mh) > rand
-                   
-                   theta(i,:,tplus1) = theta_prop;
-                   loglike(i,tplus1) = loglike_prop;
-               end
-           end
+            % theta_prop = mvnrnd(theta(i,:,tplus1), sig^2 * eye(d));
+            if rand < 0.5
+                sig = options.sig;
+            else
+                sig = options.sig/4;
+            end
+            
+            
+            theta_prop = theta(i,:,tplus1);
+            
+            ind = ceil(rand * d);
+            theta_prop(ind) = theta_prop(ind) + sig * randn;
+            loglike_prop = loglike_fn(theta_prop,options);
+            count_loglike = count_loglike + 1;
+            if norm(theta_prop,2) <=1
+                log_mh = gammavar(t+1)*(loglike_prop - loglike(i,tplus1));
+                
+                if exp(log_mh) > rand
+                    
+                    theta(i,:,tplus1) = theta_prop;
+                    loglike(i,tplus1) = loglike_prop;
+                end
+            end
         end
         
     end

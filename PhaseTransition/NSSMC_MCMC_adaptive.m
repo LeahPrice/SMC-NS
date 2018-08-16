@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, levels] = stratified_MCMC_adaptive(options)
+function [theta, log_weights, log_evidence, count_loglike, levels] = NSSMC_MCMC_adaptive(options)
 % Stratified SMC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,7 +73,7 @@ while ~terminate
     
     num_elites = sum(el_ind);
     c = num_elites/N;
-
+    
     if c == 1
         error('All Elites: Too many levels / Particles not moving')
     end
@@ -83,7 +83,7 @@ while ~terminate
         levels(t)
         error('No elites:  Particles not moving')
     end
-
+    
     %--------- Early finish stats ---------
     log_weights_early = [log_weights; loglike_curr + log(prod_c)];
     log_evidence_early = logsumexp(log_weights_early) - log(N);
@@ -110,8 +110,8 @@ while ~terminate
     if levels(t) ~= Inf
         resamp_weights = zeros(N,1);
         resamp_weights(el_ind) = ones(num_elites,1)/num_elites;
-
-       %inds = resampleStratified(resamp_weights);
+        
+        %inds = resampleStratified(resamp_weights);
         inds = resampleMultinomial(resamp_weights);
         
         theta_curr = theta_curr(inds,:);
@@ -128,7 +128,7 @@ while ~terminate
                 theta_prop = theta_curr(i,:);
                 loc = ceil(rand*d);
                 theta_prop(loc) = theta_prop(loc) + sig*randn;
-              
+                
                 if norm(theta_prop)<1
                     loglike_prop = loglike_fn(theta_prop,options);
                     count_loglike(i) = count_loglike(i) + 1;

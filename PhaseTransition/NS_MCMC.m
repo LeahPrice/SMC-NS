@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, log_evidence_adj] = nested_MCMC(options)
+function [theta, log_weights, log_evidence, count_loglike, log_evidence_adj] = NS_MCMC(options)
 % Nested sampling
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +19,7 @@ function [theta, log_weights, log_evidence, count_loglike, log_evidence_adj] = n
 %
 % count_loglike  -  The total log likelihood computations required for the
 %                   method.
-% 
+%
 
 N = options.N;
 R = options.R;
@@ -67,7 +67,7 @@ while exp(L_t-L_max) < 0.75
         choice=ceil(rand*N);
     end
     
-  %  fprintf('Current val: %.2e , max_val: %.2e, ratio: %.2e, distance: %.2e \n', L_t, L_max, exp(L_t-L_max), norm(theta_curr(min_loc,:)))
+    %  fprintf('Current val: %.2e , max_val: %.2e, ratio: %.2e, distance: %.2e \n', L_t, L_max, exp(L_t-L_max), norm(theta_curr(min_loc,:)))
     theta_curr(min_loc,:) = theta_curr(choice,:);
     loglike_curr(min_loc,:) = loglike_curr(choice,:);
     
@@ -77,11 +77,11 @@ while exp(L_t-L_max) < 0.75
         else
             sig = options.sig/4;
         end
-         
+        
         theta_prop = theta_curr(min_loc,:);
         loc = ceil(rand*d);
         theta_prop(loc) = theta_prop(loc) + sig*randn;
-       % theta_prop = theta_prop + sig * randn(1,d);
+        % theta_prop = theta_prop + sig * randn(1,d);
         if norm(theta_prop)<1
             loglike_prop = loglike_fn(theta_prop,options);
             count_loglike = count_loglike + 1;
@@ -92,7 +92,7 @@ while exp(L_t-L_max) < 0.75
             end
             
         end
-    end 
+    end
 end
 %log_weights = log_weights - log_evidence;
 %log_weights = log_weights - logsumexp(log_weights);
@@ -107,7 +107,3 @@ prob = log(((N-1)/N)^t);
 
 log_evidence_adj = logsumexp([log_evidence_adj, logsumexp(loglike_curr + prob - log(N))]);
 end
-
-
-
-

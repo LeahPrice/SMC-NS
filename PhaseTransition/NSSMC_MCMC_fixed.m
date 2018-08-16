@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, error_flag] = stratified_MCMC_fixed(options)
+function [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_MCMC_fixed(options)
 % Stratified SMC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,15 +75,15 @@ for t=2:T
     % ------------------------------------
     
     prop_Z = exp(log_evidence-log_evidence_early); % can tune to get this ~=1. Can also tune to get ESS_early/ESS_current~=1
-        
+    
     prod_c = prod_c*c;
-
+    
     if c == 0 && levels(t) ~= inf
         error_flag = 1;
         warning('Particle System has died at level %.0f of %.0f.', t, length(levels))
         t = T;
     end
-
+    
     % Resample and Move
     % Note --- all the weights are equal so we just sample uniformly
     if levels(t) ~= Inf

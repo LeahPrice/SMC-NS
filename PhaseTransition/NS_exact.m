@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, log_evidence_adj] = nested_exact(options)
+function [theta, log_weights, log_evidence, count_loglike, log_evidence_adj] = NS_exact(options)
 % Nested sampling
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,17 +54,17 @@ while exp(L_t-L_max) < 0.75
     log_weight = L_t + log(exp(-(t-1)/N)-exp(-(t+1)/N)) - log(2); %Trapezoidal Rule
     % fprintf('Current val: %.2e , max_val: %.2e, ratio: %.2e \n', L_t, L_max, exp(L_t-L_max))
     % log_evidence = logsumexp([log_evidence log_weight]);
-   log_evidence = logplusexp(log_evidence,log_weight);
-     
-   % adjusted version
-   log_weight_adj = L_t + log(((N-1)/N)^(t-1)) - log(N);
-   %log_evidence_adj = logsumexp([log_evidence_adj log_weight_adj]);
-   log_evidence_adj = logplusexp(log_evidence_adj, log_weight_adj);
-      
-   %------ Storing the new samples and weights ------
-   % theta(t,:) = theta_curr(min_loc,:);
-   % log_weights(t) = log_weight;
-   % ------------------------------------------------
+    log_evidence = logplusexp(log_evidence,log_weight);
+    
+    % adjusted version
+    log_weight_adj = L_t + log(((N-1)/N)^(t-1)) - log(N);
+    %log_evidence_adj = logsumexp([log_evidence_adj log_weight_adj]);
+    log_evidence_adj = logplusexp(log_evidence_adj, log_weight_adj);
+    
+    %------ Storing the new samples and weights ------
+    % theta(t,:) = theta_curr(min_loc,:);
+    % log_weights(t) = log_weight;
+    % ------------------------------------------------
     
     %log_evidence_early = logsumexp([log_evidence logsumexp(loglike_curr - (t-1)/N) - log(N)]);
     %ESS = exp(-logsumexp(2*(log_weights-log_evidence)));
@@ -75,7 +75,7 @@ while exp(L_t-L_max) < 0.75
     loglike_curr(min_loc,:) = loglike_fn(theta_curr(min_loc,:),options);
     count_loglike = count_loglike + 1;
     
-     %fprintf('Current val: %.2e , max_val: %.2e, ratio: %.2e, distance: %.2e \n', L_t, L_max, exp(L_t-L_max), last_dist)
+    %fprintf('Current val: %.2e , max_val: %.2e, ratio: %.2e, distance: %.2e \n', L_t, L_max, exp(L_t-L_max), last_dist)
 end
 
 %log_weights = log_weights - log_evidence;

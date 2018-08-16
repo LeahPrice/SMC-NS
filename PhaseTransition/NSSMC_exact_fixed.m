@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, error_flag] = stratified_exact_fixed(options)
+function [theta, log_weights, log_evidence, count_loglike, error_flag] = NSSMC_exact_fixed(options)
 % Stratified SMC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -81,7 +81,7 @@ for t=2:T
     prod_c = prod_c*c;
     
     pp = [pp, log(prod_c)];
- 
+    
     if c == 0
         error_flag = 1;
         t = T;
@@ -104,7 +104,7 @@ log_weights = log_weights - logsumexp(log_weights);
 
 pp;
 levels;
-clf 
+clf
 hold on
 plot(pp, levels, 'b', 'linewidth', 3)
 plot(pp, levels, 'bo')

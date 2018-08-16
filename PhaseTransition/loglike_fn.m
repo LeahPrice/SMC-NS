@@ -37,7 +37,7 @@ if log_scale
     mxm = max(tt1,tt2);
     mnm = min(tt1,tt2);
     
-    loglike = mxm + log(1+ exp(mnm -mxm)); 
+    loglike = mxm + log(1+ exp(mnm -mxm));
 else
     t1=a1; t2=a2;
     for i=1:d

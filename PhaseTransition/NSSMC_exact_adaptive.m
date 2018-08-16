@@ -1,4 +1,4 @@
-function [theta, log_weights, log_evidence, count_loglike, levels, distances] = stratified_exact_adaptive(options)
+function [theta, log_weights, log_evidence, count_loglike, levels, distances] = NSSMC_exact_adaptive(options)
 % Stratified SMC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,7 +57,7 @@ while ~terminate
     t = t+1;
     ostats = sort(loglike_curr);
     levels(t) = ostats(floor((1-rho)*N));
- 
+    
     %---- decide whether or not to terminate -----
     if exp(levels(t) - L_max) > 0.75
         terminate = true;
@@ -97,7 +97,7 @@ while ~terminate
     m = max(new_inds);
     % ------------------------------------
     
-    prop_Z = exp(log_evidence-log_evidence_early); % can tune to get this ~=1. Can also tune to get ESS_early/ESS_current~=1 
+    prop_Z = exp(log_evidence-log_evidence_early); % can tune to get this ~=1. Can also tune to get ESS_early/ESS_current~=1
     prod_c = prod_c*c;
     
     % New Samples
@@ -109,7 +109,7 @@ while ~terminate
             theta_curr(i,:) = Sampler(last_dist,d);
             loglike_curr(i,:) = loglike_fn(theta_curr(i,:),options);
         end
-       count_loglike = count_loglike + N;
+        count_loglike = count_loglike + N;
     end
     
 end

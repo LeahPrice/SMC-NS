@@ -9,5 +9,3 @@ location = strcat(p(1:(strfind(p, '\PhaseTransition'))), 'code'); % getting the 
 addpath(genpath(location)); % adding the contents of the 'code' folder to the working directory
 
 Run(N,R,runs,exact_sample)
-
-

@@ -42,5 +42,3 @@ while (i<=M)
     indx(i)=j;
     i=i+1;
 end
-
-
