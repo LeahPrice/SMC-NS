@@ -1,0 +1,81 @@
+function [log_evidence, log_evidence_star, count_loglike] = NS_bespoke_exact(loglike_fn,simprior_fn,options,verbose)
+% NS with bespoke, exact sampling for the move steps.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% loglike_fn     -  log likelihood function taking the samples and a list as input
+%
+% logprior_fn    -  log prior function taking the samples and a list as input
+%
+% simprior_fn    -  function to simulate from the prior taking the sample size and list as input
+%
+% options        -  options.N: Size of population of particles
+%                -  options.desired_count: the desired number of likelihood
+%                evaluations (for use in the stopping rule instead of
+%                stopping_epsilon)
+%                -  ... example specific data and options
+%
+% verbose        -  set to true to get running update of progress and false otherwise
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OUTPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% log_evidence 	 -  The log evidence estimate from vanilla NS
+% 
+% log_evidence_star	 -  The log evidence estimate from NS*
+%
+% count_loglike  -  The total log likelihood computations
+
+if isa(loglike_fn,'function_handle') == 0
+    loglike_fn = str2func(loglike_fn);
+end
+if isa(simprior_fn,'function_handle') == 0
+    simprior_fn = str2func(simprior_fn);
+end
+
+N = options.N;
+
+theta_curr = simprior_fn(N,options);
+d = size(theta_curr,2);
+
+%initialise
+log_evidence = -inf;
+log_evidence_star = -inf;
+t = 1;
+
+loglike_curr = zeros(N,1);
+for i=1:N
+    loglike_curr(i) = loglike_fn(theta_curr(i,:),options);
+end
+
+count_loglike = N;
+
+while count_loglike <= options.desired_count
+    t = t+1;
+    [levels, min_loc] = min(loglike_curr);
+    
+    log_weight = levels + log(exp(-(t-1)/N)-exp(-t/N)); % Riemann
+    %log_weight = levels + log((exp(-(t-1)/N)-exp(-(t+1)/N))/2); % trapezoidal
+    
+    log_evidence = logsumexp([log_evidence log_weight]);
+    
+    % adjusted version
+    log_weight_star = levels + log(((N-1)/N)^(t-1)) - log(N);
+    log_evidence_star = logsumexp([log_evidence_star log_weight_star]);
+
+    if verbose
+        fprintf('\nIter %d\tLevel: %.4f\n\t\tCurrent log Z: %.4f\n',t,levels,log_evidence);
+    end
+    
+    dists = norm(theta_curr(min_loc,:));
+    
+    theta_curr(min_loc,:) = bespoke_exact(dists,d);
+    loglike_curr(min_loc) = loglike_fn(theta_curr(min_loc,:),options);
+    count_loglike = count_loglike + 1;
+end
+
+t = t+1;
+log_evidence = logsumexp([log_evidence logsumexp(loglike_curr - t/N) - log(N)]);
+
+prob = t*log((N-1)/N);
+
+log_evidence_star = logsumexp([log_evidence_star, logsumexp(loglike_curr + prob - log(N))]);
+
+end
