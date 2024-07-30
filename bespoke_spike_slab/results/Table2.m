@@ -24,6 +24,10 @@ mean(exp([log_evidence_ns log_evidence_ns_star log_evidence_ans_smc...
 std(exp([log_evidence_ns log_evidence_ns_star log_evidence_ans_smc...
     log_evidence_ns_smc]))/sqrt(num_repeats)
 
+% Compute time
+mean([time_ns time_ns_star time_ans_smc...
+time_ns_smc])
+
 % Average log likelihood evaluations
 mean([count_ns count_ns_star count_ans_smc count_ns_smc])
 
@@ -49,6 +53,10 @@ mean((exp(log_evidence_ns_smc) - gold).^2)]
 % % Standard error
 % std(exp([log_evidence_ns log_evidence_ns_star log_evidence_ans_smc...
 %     log_evidence_ns_smc log_evidence_ata_smc log_evidence_ta_smc]))/sqrt(num_repeats)
+% 
+% % Compute time
+% mean([time_ns time_ns_star time_ans_smc...
+%     time_ns_smc time_ata_smc time_ta_smc])
 % 
 % % Average log likelihood evaluations
 % mean([count_ns count_ns_star count_ans_smc count_ns_smc...
