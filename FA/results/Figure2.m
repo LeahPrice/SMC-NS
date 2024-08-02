@@ -21,20 +21,20 @@ logsumexp_gold = mymax + log(sum(exp(log_evidence_gold - mymax)));
 modelprobs_gold = exp(log_evidence_gold - logsumexp_gold*ones(1,3));
 
 mymax = max(log_evidence_ata_smc,[],2);
-logsumexp_ata_smc = mymax + log(sum(exp(log_evidence_ata_smc - mymax),2));
-modelprobs_ata_smc = exp(log_evidence_ata_smc - logsumexp_ata_smc*ones(1,3));
+nc = mymax + log(sum(exp(log_evidence_ata_smc - mymax),2));
+modelprobs_ata_smc = exp(log_evidence_ata_smc - nc*ones(1,3));
 
 mymax = max(log_evidence_ans_smc,[],2);
-logsumexp_ans_smc = mymax + log(sum(exp(log_evidence_ans_smc - mymax),2));
-modelprobs_ans_smc = exp(log_evidence_ans_smc - logsumexp_ans_smc*ones(1,3));
+nc = mymax + log(sum(exp(log_evidence_ans_smc - mymax),2));
+modelprobs_ans_smc = exp(log_evidence_ans_smc - nc*ones(1,3));
 
 mymax = max(log_evidence_ns_smc,[],2);
-logsumexp_ns_smc = mymax + log(sum(exp(log_evidence_ns_smc - mymax),2));
-modelprobs_ns_smc = exp(log_evidence_ns_smc - logsumexp_ns_smc*ones(1,3));
+nc = mymax + log(sum(exp(log_evidence_ns_smc - mymax),2));
+modelprobs_ns_smc = exp(log_evidence_ns_smc - nc*ones(1,3));
 
 mymax = max(log_evidence_ns,[],2);
-logsumexp_ns = mymax + log(sum(exp(log_evidence_ns - mymax),2));
-modelprobs_ns = exp(log_evidence_ns - logsumexp_ns*ones(1,3));
+nc = mymax + log(sum(exp(log_evidence_ns - mymax),2));
+modelprobs_ns = exp(log_evidence_ns - nc*ones(1,3));
 
 modelprobs_1 = [modelprobs_ata_smc(:,1) modelprobs_ans_smc(:,1) modelprobs_ns_smc(:,1) modelprobs_ns(:,1)];
 modelprobs_2 = [modelprobs_ata_smc(:,2) modelprobs_ans_smc(:,2) modelprobs_ns_smc(:,2) modelprobs_ns(:,2)];
