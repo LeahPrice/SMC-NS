@@ -69,7 +69,8 @@ while -t/N + max(loglike_curr) > log(stopping_epsilon)  + log_evidence
     t = t+1;
     [levels(t), min_loc] = min(loglike_curr);
     
-    log_weight = levels(t) + log(exp(-(t-1)/N)-exp(-t/N)); % Riemann
+    % log_weight = levels(t) + log(exp(-(t-1)/N)-exp(-t/N)); % Riemann
+	log_weight = levels(t) - t/N + log(exp(1/N)-1);  % more numerically stable version of Riemann
     %log_weight = levels(t) + log((exp(-(t-1)/N)-exp(-(t+1)/N))/2); % trapezoidal
     
     % Storing the new samples (COULD CONSIDER DOING THIS MORE EFFICIENTLY!)
@@ -81,7 +82,8 @@ while -t/N + max(loglike_curr) > log(stopping_epsilon)  + log_evidence
     log_evidence = logsumexp([log_evidence log_weight]);
     
     % adjusted version
-    log_weight_star = levels(t) + log(((N-1)/N)^(t-1)) - log(N);
+    % log_weight_star = levels(t) + log(((N-1)/N)^(t-1)) - log(N);
+    log_weight_star = levels(t) + (t-1)*log(N-1) - t*log(N); % more numerically stable version
     log_evidence_star = logsumexp([log_evidence_star log_weight_star]);
 
     if verbose
@@ -118,10 +120,8 @@ end
 
 t = t+1;
 levels(t) = Inf; % forces final strata
-log_evidence = logsumexp([log_evidence logsumexp(loglike_curr - t/N) - log(N)]);
+log_evidence = logsumexp([log_evidence logsumexp(loglike_curr - t/N - log(N))]);
 
-prob = t*log((N-1)/N);
-
-log_evidence_star = logsumexp([log_evidence_star, logsumexp(loglike_curr + prob - log(N))]);
+log_evidence_star = logsumexp([log_evidence_star, logsumexp(loglike_curr + t*log(N-1) - (t+1)*log(N))]);
 
 end

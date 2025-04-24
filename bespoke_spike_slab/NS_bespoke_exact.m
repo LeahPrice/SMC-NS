@@ -50,32 +50,32 @@ count_loglike = N;
 while count_loglike <= options.desired_count
     t = t+1;
     [levels, min_loc] = min(loglike_curr);
-    
-    log_weight = levels + log(exp(-(t-1)/N)-exp(-t/N)); % Riemann
+	
+	% log_weight = levels + log(exp(-(t-1)/N)-exp(-t/N)); % Riemann
+    log_weight = levels - t/N + log(exp(1/N)-1); % more numerically stable version of Riemann
     %log_weight = levels + log((exp(-(t-1)/N)-exp(-(t+1)/N))/2); % trapezoidal
-    
+
     log_evidence = logsumexp([log_evidence log_weight]);
-    
+
     % adjusted version
-    log_weight_star = levels + log(((N-1)/N)^(t-1)) - log(N);
+    % log_weight_star = levels + log(((N-1)/N)^(t-1)) - log(N);
+    log_weight_star = levels + (t-1)*log(N-1) - t*log(N); % more numerically stable version
     log_evidence_star = logsumexp([log_evidence_star log_weight_star]);
 
     if verbose
         fprintf('\nIter %d\tLevel: %.4f\n\t\tCurrent log Z: %.4f\n',t,levels,log_evidence);
     end
-    
+
     dists = norm(theta_curr(min_loc,:));
-    
+
     theta_curr(min_loc,:) = bespoke_exact(dists,d);
     loglike_curr(min_loc) = loglike_fn(theta_curr(min_loc,:),options);
     count_loglike = count_loglike + 1;
 end
 
 t = t+1;
-log_evidence = logsumexp([log_evidence logsumexp(loglike_curr - t/N) - log(N)]);
+log_evidence = logsumexp([log_evidence logsumexp(loglike_curr - t/N - log(N))]);
 
-prob = t*log((N-1)/N);
-
-log_evidence_star = logsumexp([log_evidence_star, logsumexp(loglike_curr + prob - log(N))]);
+log_evidence_star = logsumexp([log_evidence_star, logsumexp(loglike_curr + t*log(N-1) - (t+1)*log(N))]);
 
 end
